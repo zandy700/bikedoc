@@ -1,26 +1,286 @@
 @import "tailwindcss";
 
+/*
+ * BikeDoc — workshop palette.
+ * Zinc workbench surfaces, graphite ink, bottle-green enamel for actions,
+ * hi-vis repair-tag yellow for the things a mechanic must notice.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  color-scheme: light;
+  --bg: #e9ece8;
+  --bg-2: #dfe3de;
+  --panel: #ffffff;
+  --ink: #18201c;
+  --ink-2: #45514b;
+  --ink-3: #5c6862;
+  --line: #c4ccc6;
+  --line-strong: #8f9a94;
+  --accent: #0b6e52;
+  --accent-ink: #ffffff;
+  --accent-soft: #d6ebe2;
+  --tag: #f5c842;
+  --tag-ink: #2a2306;
+  --danger: #a8231b;
+  --danger-soft: #f8e1de;
+  --warn-soft: #fdf1c7;
+  --focus: #0a58c2;
+  --series-1: #0a8462;
+  --series-2: #c77700;
+  --grid: #e1e5e2;
+  --peg: rgb(24 32 28 / 0.09);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
+    --bg: #121614;
+    --bg-2: #181d1a;
+    --panel: #1c211e;
+    --ink: #e6ebe7;
+    --ink-2: #b0bbb4;
+    --ink-3: #96a29b;
+    --line: #313b35;
+    --line-strong: #56625b;
+    --accent: #3fbf92;
+    --accent-ink: #08140f;
+    --accent-soft: #173328;
+    --tag: #e2b53a;
+    --tag-ink: #1d1803;
+    --danger: #ff8a7f;
+    --danger-soft: #3a1c19;
+    --warn-soft: #342c10;
+    --focus: #7fb4ff;
+    --series-1: #1f9a74;
+    --series-2: #c98500;
+    --grid: #2a322d;
+    --peg: rgb(230 235 231 / 0.06);
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-tag: var(--tag);
+  --color-tag-ink: var(--tag-ink);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warn-soft: var(--warn-soft);
+  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-barlow-condensed), var(--font-barlow), ui-sans-serif, sans-serif;
+}
+
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  /* Keep focused elements clear of the mobile bottom tab bar. */
+  scroll-padding-bottom: 5rem;
+}
+
+@media (min-width: 48rem) {
+  html {
+    scroll-padding-bottom: 0;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--tag);
+  color: var(--tag-ink);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: 1.1;
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+input,
+textarea,
+select {
+  accent-color: var(--accent);
+  caret-color: var(--accent);
+}
+
+/* Pegboard: the workshop wall the tools hang on. Only behind the masthead. */
+.pegboard {
+  background-color: var(--bg-2);
+  background-image: radial-gradient(circle at center, var(--peg) 2.5px, transparent 3px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    line-height: 1.2;
+    border: 1px solid var(--line-strong);
+    background: var(--panel);
+    color: var(--ink);
+    cursor: pointer;
+    transition:
+      background-color 150ms ease-out,
+      border-color 150ms ease-out;
+    touch-action: manipulation;
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--bg-2);
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--accent) 86%, var(--ink));
+  }
+  .btn-danger {
+    color: var(--danger);
+    border-color: color-mix(in oklab, var(--danger) 55%, var(--line));
+  }
+  .btn-sm {
+    min-height: 44px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  .field {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--line-strong);
+    background: var(--panel);
+    color: var(--ink);
+  }
+  .field::placeholder {
+    color: var(--ink-3);
+  }
+  .field[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
+
+  .label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+
+  /* Repair tag: notched corner + punched hole, the label that hangs off every donated bike. */
+  .repair-tag {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    clip-path: polygon(18px 0, 100% 0, 100% 100%, 0 100%, 0 18px);
+  }
+  .repair-tag::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: 9px;
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  }
+
+  .tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.5;
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    background: var(--bg-2);
+  }
+  .tag-chip-hivis {
+    background: var(--tag);
+    color: var(--tag-ink);
+    border-color: color-mix(in oklab, var(--tag) 70%, var(--tag-ink));
+  }
+
+  .sr-only-focusable:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .repair-tag {
+    clip-path: none;
+    border: 1px solid CanvasText;
+  }
 }
