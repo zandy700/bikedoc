@@ -39,7 +39,8 @@ export function DiagnoseForm() {
     let cancelled = false;
     fetch("/api/diagnose", { method: "GET" })
       .then((r) => (r.ok ? r.json() : null))
-      .then((data: { mode?: "ai" | "demo"; model?: string } | null) => {
+      .then((raw) => {
+        const data = raw as { mode?: "ai" | "demo"; model?: string } | null;
         if (cancelled || !data?.mode) return;
         setMode(data.mode);
         setModel(data.model);

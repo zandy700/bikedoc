@@ -2,7 +2,7 @@
 
 An AI bike repair assistant for volunteer mechanics: diagnose faults from a photo and a description, follow step-by-step repair guides, and track every donated bike from intake to shipment.
 
-**Live demo:** LIVE_URL_TBD
+**Live demo:** https://bikedoc.xingjianzhang700.workers.dev
 
 ## Motivation
 
@@ -75,6 +75,7 @@ Diagnoses from either path are validated against the same zod schema and link ea
 - zod v4 for request and response validation
 - Recharts for dashboard charts
 - Vitest + Testing Library for tests, ESLint for linting, Playwright for screenshots
+- Deployed on Cloudflare Workers with vinext (`@vinext/cloudflare`)
 
 ## Getting started
 
@@ -137,6 +138,21 @@ npx playwright install chromium   # first time only
 npm run build && npm run start
 npm run screenshots               # in another terminal; BASE_URL defaults to http://localhost:3000
 ```
+
+
+## Deploy (Cloudflare Workers)
+
+Production runs on [Cloudflare Workers](https://workers.cloudflare.com) via [vinext](https://github.com/cloudflare/vinext) (Next.js on Workers).
+
+```bash
+npm ci
+npm run build:vinext
+npm run deploy:vinext
+```
+
+`cloudflare.config.ts` names the Worker `bikedoc` and targets account `69b2fd9ad4a1cbc2f9769dd42dd5a9e4`. Auth with the Cloudflare CLI (`npx cf auth login`) or a `CLOUDFLARE_API_TOKEN` that can edit Workers Scripts. Optional AI keys can be set as Worker secrets after deploy; without them the live site stays in demo mode.
+
+Local Next.js (`npm run dev` / `npm run build`) still works for everyday development. Use the vinext scripts when you want the Workers runtime.
 
 ## Disclaimer
 
