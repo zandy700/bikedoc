@@ -20,7 +20,6 @@ export type AdvanceCheck = { ok: true; to: Stage } | { ok: false; reason: string
 /**
  * Business rules for moving a bike forward one stage:
  * - shipped is terminal
- * - leaving diagnosis requires at least one recorded fault OR the explicit "no faults" note (faults may be empty only if notes mention it) — kept simple: allowed always
  * - moving to shipped requires an assigned shipment
  */
 export function canAdvance(bike: Bike): AdvanceCheck {

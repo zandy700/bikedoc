@@ -109,8 +109,16 @@ export function addBikeNote(state: AppState, bikeId: string, note: string, now: 
 
 export const STORAGE_KEY = "bikedoc:state:v1";
 
+// Bound supported years so corrupted storage cannot produce enormous chart ranges.
+const supportedYear = (value: string) => {
+  const year = Number(value.slice(0, 4));
+  return year >= 1900 && year <= 2199;
+};
+const storedDateSchema = z.iso.date().refine(supportedYear, "Date is outside the supported range");
+const storedTimestampSchema = z.iso.datetime().refine(supportedYear, "Date is outside the supported range");
+
 const historyEventSchema = z.object({
-  at: z.string(),
+  at: storedTimestampSchema,
   stage: z.enum(STAGES),
   note: z.string(),
 });
@@ -121,7 +129,7 @@ const bikeSchema = z.object({
   type: z.enum(BIKE_TYPES),
   size: z.string(),
   color: z.string(),
-  intakeDate: z.string(),
+  intakeDate: storedDateSchema,
   stage: z.enum(STAGES),
   faults: z.array(z.enum(ISSUE_CATEGORIES)),
   notes: z.string(),
@@ -134,7 +142,7 @@ const shipmentSchema = z.object({
   name: z.string(),
   destination: z.string(),
   status: z.enum(["planning", "packing", "shipped"]),
-  targetDate: z.string(),
+  targetDate: storedDateSchema,
   capacity: z.number().int().nonnegative(),
 });
 

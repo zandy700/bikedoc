@@ -3,11 +3,11 @@
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { generateTextMock } = vi.hoisted(() => ({ generateTextMock: vi.fn() }));
+const { generateObjectMock } = vi.hoisted(() => ({ generateObjectMock: vi.fn() }));
 
 vi.mock("ai", async (importOriginal) => {
   const actual = await importOriginal<typeof import("ai")>();
-  return { ...actual, generateText: generateTextMock };
+  return { ...actual, generateObject: generateObjectMock };
 });
 
 import { FALLBACK_NOTICE, runDiagnosis, SYSTEM_PROMPT } from "./diagnose";
@@ -18,7 +18,7 @@ const IMAGE = "data:image/png;base64,iVBORw0KGgo=";
 const AI_ENV = { OPENAI_API_KEY: "sk-test" };
 
 beforeEach(() => {
-  generateTextMock.mockReset();
+  generateObjectMock.mockReset();
   vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
@@ -39,12 +39,12 @@ describe("runDiagnosis", () => {
       expect(res.body.model).toBeUndefined();
       expect(res.body.diagnosis.issues[0].guideId).toBe("index-rear-derailleur");
     }
-    expect(generateTextMock).not.toHaveBeenCalled();
+    expect(generateObjectMock).not.toHaveBeenCalled();
   });
 
   it("calls the AI with text and image parts and returns mode ai", async () => {
-    generateTextMock.mockResolvedValue({
-      output: {
+    generateObjectMock.mockResolvedValue({
+      object: {
         summary: "Likely worn chain.",
         issues: [
           { category: "brakes", title: "Pads", confidence: 0.3, evidence: "Visible wear", guideId: "brake-pad-replacement" },
@@ -57,9 +57,9 @@ describe("runDiagnosis", () => {
     expect(res.body).toMatchObject({ ok: true, mode: "ai", model: "openai:gpt-4o-mini" });
     if (res.body.ok) expect(res.body.diagnosis.issues.map((i) => i.confidence)).toEqual([0.8, 0.3]);
 
-    const args = generateTextMock.mock.calls[0][0];
+    const args = generateObjectMock.mock.calls[0][0];
     expect(args.instructions).toBe(SYSTEM_PROMPT);
-    expect(args.output).toBeDefined();
+    expect(args.schema).toBeDefined();
     const content = args.messages[0].content;
     expect(content[0]).toMatchObject({ type: "text" });
     expect(content[0].text).toContain("chain skips");
@@ -67,7 +67,7 @@ describe("runDiagnosis", () => {
   });
 
   it("falls back to rules with a notice when the AI call throws", async () => {
-    generateTextMock.mockRejectedValue(new Error("rate limited"));
+    generateObjectMock.mockRejectedValue(new Error("rate limited"));
     const res = await runDiagnosis({ description: "flat tyre" }, AI_ENV);
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ ok: true, mode: "demo", notice: FALLBACK_NOTICE });
@@ -75,8 +75,8 @@ describe("runDiagnosis", () => {
   });
 
   it("falls back when the AI returns output that fails the schema", async () => {
-    generateTextMock.mockResolvedValue({
-      output: { summary: "x", issues: [{ category: "brakes", title: "t", confidence: 2, evidence: "e", guideId: "made-up" }] },
+    generateObjectMock.mockResolvedValue({
+      object: { summary: "x", issues: [{ category: "brakes", title: "t", confidence: 2, evidence: "e", guideId: "made-up" }] },
     });
     const res = await runDiagnosis({ description: "squeal" }, { ANTHROPIC_API_KEY: "k" });
     expect(res.body).toMatchObject({ ok: true, mode: "demo", notice: FALLBACK_NOTICE });

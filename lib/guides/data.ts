@@ -31,7 +31,7 @@ export const GUIDES: Guide[] = [
     steps: [
       {
         title: "Inspect hanger, cable and housing",
-        body: "Shift to the smallest cog. Sight from behind: the jockey wheels should sit in a vertical line under the cog. A bent hanger is the most common cause of poor shifting on donated bikes. Check for frayed inner cable, kinked or cracked housing and missing ferrules.",
+        body: "Shift to the smallest cog. Sight from behind: the jockey wheels should sit in a vertical line under the cog. A bent hanger can prevent consistent indexing. Check for frayed inner cable, kinked or cracked housing and missing ferrules.",
         caution: "If the hanger is visibly bent, align it with a hanger gauge or replace it before going further. Indexing a bent hanger never works.",
       },
       {
@@ -128,7 +128,7 @@ export const GUIDES: Guide[] = [
     steps: [
       {
         title: "Match the chain to the drivetrain",
-        body: "Count cassette cogs and choose a chain of the same speed. Singlespeed and hub-gear bikes use 1/8 inch chain; derailleur bikes use 3/32 inch.",
+        body: "Count cassette cogs and choose a chain of the same speed. Singlespeed and hub-gear bikes may use 1/8 or 3/32 inch chain: match the sprockets and manufacturer specification. Derailleur chains have speed-specific widths and compatibility requirements.",
       },
       {
         title: "Remove the old chain",
@@ -145,11 +145,11 @@ export const GUIDES: Guide[] = [
       },
       {
         title: "Route the chain",
-        body: "Thread the chain through the front derailleur cage, around the smallest cog and through the rear derailleur cage, passing in front of the tab between the jockey wheels.",
+        body: "On derailleur bikes, route the chain through the front derailleur cage if fitted, around the smallest cog and around both rear jockey wheels, on the correct side of the cage's guide tab as shown by the derailleur maker. Follow a separate single-speed sizing and tensioning procedure for bikes without a derailleur.",
       },
       {
         title: "Join the chain",
-        body: "Fit the quick link, then hold the rear brake and press down on a pedal to snap the link closed. For pinned chains, drive the special connecting pin through and snap off the guide.",
+        body: "Follow the chain maker's direction markings and quick-link instructions, using master link pliers to seat both pins fully where specified. For pinned chains, use only the compatible new connecting pin and follow the maker's insertion procedure; never reuse a pin pressed out during removal.",
       },
       {
         title: "Check the joint and lubricate",
@@ -180,7 +180,7 @@ export const GUIDES: Guide[] = [
     steps: [
       {
         title: "Assess pad wear",
-        body: "Rim pads: replace when the wear grooves are gone or the pad is under about 1mm from the metal holder. Disc pads: replace when the friction material is under 0.5mm, or 2.5-3mm total including the backing plate.",
+        body: "Rim pads: replace when the wear grooves are gone or the pad is under about 1mm from the metal holder. Disc pads: follow the brake manufacturer's minimum thickness; limits differ and may measure friction material alone or the complete pad. If no specification is available, replace pads with about 1mm or less friction material remaining.",
       },
       {
         title: "Remove the old pads",
@@ -226,7 +226,7 @@ export const GUIDES: Guide[] = [
     tools: ["5mm hex key", "Cable cutters", "Fourth-hand cable puller", "Grease", "Cable end crimps"],
     parts: ["Brake inner cable (1.5-1.6mm, road or MTB head)", "Brake housing (compressionless or standard)", "Ferrules"],
     safetyNotes: [
-      "Never use shift cable or shift housing for brakes; brake housing is spiral-wound to resist compression under load.",
+      "Never use shift cable or shift housing for brakes. Use brake-rated housing; compressionless housing must be explicitly rated for brakes, especially mechanical discs.",
       "A frayed or rusty brake cable must be replaced, never just re-tensioned.",
       "Every brake job must be checked by a second mechanic before QA.",
     ],
@@ -245,7 +245,7 @@ export const GUIDES: Guide[] = [
       },
       {
         title: "Set tension at the anchor bolt",
-        body: "Loosen the 5mm anchor bolt, hold the pads about 1-2mm from the rim (or squeeze the caliper with a fourth-hand tool), pull the cable snug and retighten the bolt firmly.",
+        body: "For rim brakes, loosen the anchor bolt, hold the pads about 1-2mm from the rim, pull the cable snug and tighten to the manufacturer torque. For mechanical discs, first set the fixed and moving pad clearances using the caliper maker's instructions, then clamp the cable with the actuating arm in its specified resting position; do not compensate for pad wear using cable tension alone.",
         caution: "Make sure the cable sits in its groove under the anchor washer; a cable clamped in the wrong place can slip under hard braking.",
       },
       {
@@ -434,7 +434,7 @@ export const GUIDES: Guide[] = [
     parts: ["Inner tube of the correct size and valve type", "Patch kit (glue patches or self-adhesive)", "Rim tape (if damaged)"],
     safetyNotes: [
       "Always find and remove the cause of a puncture before fitting a new tube, or it will puncture again.",
-      "Don't exceed the maximum pressure printed on the tyre sidewall.",
+      "Do not exceed either the tyre or rim maximum pressure, whichever is lower. Never squeeze a hydraulic disc brake lever with the wheel removed unless a pad spacer is fitted.",
     ],
     steps: [
       {
@@ -464,7 +464,7 @@ export const GUIDES: Guide[] = [
       },
       {
         title: "Inflate and seat",
-        body: "Inflate to about 1 bar, check the tube isn't caught under the bead, and check the bead line is even all around both sides. Then inflate to the pressure on the sidewall.",
+        body: "Inflate to about 1 bar, check the tube isn't caught under the bead, and check the bead line is even all around both sides. Then inflate within the tyre and rim manufacturer pressure limits, using a pressure appropriate for the rider and tyre size; the sidewall maximum is not a target.",
       },
     ],
     verify: [
@@ -551,7 +551,7 @@ export const GUIDES: Guide[] = [
       },
       {
         title: "Identify and remove the BB",
-        body: "Identify the shell standard (English/BSA 68 or 73mm, Italian, press-fit) and the BB type. Remove the non-drive cup first with the matching BB tool, keeping the tool fully engaged.",
+        body: "Identify the shell standard and BB type before removal. The following threaded-cup steps apply to BSA or Italian cartridge/external brackets only; press-fit and adjustable cup-and-cone brackets require their own manufacturer procedure and tools. For a compatible threaded bracket, remove the non-drive cup first, keeping the matching BB tool fully engaged.",
       },
       {
         title: "Inspect and clean the shell",
@@ -603,7 +603,7 @@ export const GUIDES: Guide[] = [
       {
         title: "Threadless: set preload",
         body: "Tighten the top cap bolt in small increments until play disappears but the bars still turn freely. The top cap only sets preload; it does not hold anything in place.",
-        caution: "There must be a 2-5mm gap between the top of the steerer and the top of the stem/spacer stack, or the top cap can't preload the bearings.",
+        caution: "The top cap must press on the stem/spacer stack rather than bottom out on the steerer. Follow the fork and stem maker's spacer, steerer-height and expansion-plug requirements, especially for carbon steerers; never lower the steerer below the required stem clamping area.",
       },
       {
         title: "Threadless: align and tighten the stem",
@@ -632,7 +632,7 @@ export const GUIDES: Guide[] = [
       "Systematically inspect a donated frame and fork for cracks, dents and bends at the high-stress areas, and decide whether it is safe to refurbish.",
     difficulty: "medium",
     timeMinutes: 15,
-    tools: ["Bright torch or headlamp", "Degreaser and rag", "Magnifying glass", "Coin (carbon tap test)", "Frame alignment gauge or string (optional)"],
+    tools: ["Bright torch or headlamp", "Degreaser and rag", "Magnifying glass", "Frame alignment gauge or string (optional)"],
     parts: [],
     safetyNotes: [
       "Never ship a bike with a cracked frame or fork. A crack will grow and fail without warning.",
@@ -666,11 +666,11 @@ export const GUIDES: Guide[] = [
       },
       {
         title: "Dents and alignment",
-        body: "Run fingers along each tube for dents. Small dents in steel tubes away from joints can be acceptable; dents in aluminium or near joints are a reject. Check that the rear wheel sits centred between the chainstays.",
+        body: "Run fingers along each tube for dents. Tag any dent, bend or suspected structural damage for assessment by a qualified mechanic or the manufacturer. Do not approve a dent based only on frame material or location. Check that the rear wheel sits centred between the chainstays; a centred wheel alone does not establish frame alignment.",
       },
       {
-        title: "Confirm suspected cracks",
-        body: "Flex the frame (press the pedals against the brakes, push on the saddle) while watching the suspected area; a crack will open and close or the paint line will move. For carbon, a coin tap that sounds dull rather than sharp means possible delamination.",
+        title: "Isolate suspected damage",
+        body: "Stop work and tag the bike out of service when a crack or structural damage is suspected. Do not flex, load or test ride the frame to prove a crack. A visual inspection or home coin-tap test cannot rule out hidden carbon damage; retire the part or refer it to a qualified specialist.",
         caution: "If in doubt, tag the frame as rejected. Ask a senior mechanic for a second opinion; never ship a questionable frame.",
       },
     ],

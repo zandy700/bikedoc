@@ -2,7 +2,7 @@
  * Server-only diagnosis entry point. Do not import from client components:
  * it reads API keys from the environment.
  */
-import { generateText, Output, type LanguageModel, type UserContent } from "ai";
+import { generateObject, type LanguageModel, type UserContent } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { getModelConfig } from "@/lib/ai/provider";
@@ -91,15 +91,15 @@ export async function runDiagnosis(
 
   const modelName = `${config.provider}:${config.modelId}`;
   try {
-    const result = await generateText({
+    const result = await generateObject({
       model: createModel(config.provider, config.modelId, env),
       instructions: SYSTEM_PROMPT,
       messages: [{ role: "user", content: buildContent(description, image) }],
-      output: Output.object({ schema: diagnosisSchema }),
+      schema: diagnosisSchema,
       maxRetries: 1,
       abortSignal: AbortSignal.timeout(AI_TIMEOUT_MS),
     });
-    const diagnosis = tidy(diagnosisSchema.parse(result.output));
+    const diagnosis = tidy(diagnosisSchema.parse(result.object));
     return { status: 200, body: { ok: true, mode: "ai", model: modelName, diagnosis } };
   } catch (error) {
     console.error(

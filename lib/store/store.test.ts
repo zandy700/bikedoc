@@ -57,6 +57,12 @@ describe("store reducers", () => {
     expect(() => addBike(state, { label: "  ", type: "road", size: "", color: "" }, now)).toThrow(/label/);
   });
 
+  it("allocates a unique id after gaps in persisted bike numbers", () => {
+    const sparse = { ...state, bikes: [state.bikes[0], { ...state.bikes[1], id: "BK-0120" }] };
+    const { bike } = addBike(sparse, { label: "New donation", type: "hybrid", size: "M", color: "Blue" }, now);
+    expect(bike.id).toBe("BK-0121");
+  });
+
   it("advanceBikeInState advances immutably", () => {
     const b = firstAt("intake");
     const next = advanceBikeInState(state, b.id, now, "ok");
@@ -134,6 +140,37 @@ describe("persistence", () => {
     clearState(storage);
     expect(storage.data.has(STORAGE_KEY)).toBe(false);
     expect(loadState(storage)).toEqual(seed);
+  });
+
+  it.each(["not-a-date", "2026-02-30", "2026-13-01", "0001-01-01", "9999-01-01"])("discards persisted invalid intake date %s before charts consume it", (intakeDate) => {
+    const invalid = { ...seed, bikes: [{ ...seed.bikes[0], intakeDate }] };
+    expect(loadState(fakeStorage({ [STORAGE_KEY]: JSON.stringify(invalid) }))).toEqual(seed);
+  });
+
+  it.each(["not-a-time", "2026-02-30T10:00:00Z", "2026-11-01T25:00:00Z", "0001-01-01T00:00:00Z", "9999-01-01T00:00:00Z"])("discards persisted invalid history timestamp %s before charts consume it", (at) => {
+    const invalid = { ...seed, bikes: [{ ...seed.bikes[0], history: [{ ...seed.bikes[0].history[0], at }] }] };
+    expect(loadState(fakeStorage({ [STORAGE_KEY]: JSON.stringify(invalid) }))).toEqual(seed);
+  });
+
+  it("preserves a newly donated bike's complete lifecycle after reload", () => {
+    const storage = fakeStorage();
+    const added = addBike(seed, { label: "Workshop donation", type: "road", size: "54cm", color: "Green" }, now);
+    const id = added.bike.id;
+    let next = advanceBikeInState(added.state, id, new Date("2026-11-02T09:00:00Z"));
+    next = setBikeFaults(next, id, ["brakes"]);
+    next = advanceBikeInState(next, id, new Date("2026-11-02T10:00:00Z"));
+    next = addBikeNote(next, id, "Replaced pads", new Date("2026-11-02T11:00:00Z"));
+    next = advanceBikeInState(next, id, new Date("2026-11-02T12:00:00Z"));
+    expect(() => advanceBikeInState(next, id, now)).toThrow(/shipment/);
+    next = assignShipment(next, id, "SH-LOC-1");
+    next = advanceBikeInState(next, id, new Date("2026-11-03T09:00:00Z"), "QA signed off");
+    saveState(storage, next);
+
+    const reloaded = getBike(loadState(storage), id)!;
+    expect(reloaded).toMatchObject({ stage: "shipped", faults: ["brakes"], shipmentId: "SH-LOC-1" });
+    expect(reloaded.history.map((event) => event.stage)).toEqual(["intake", "diagnosis", "repair", "repair", "qa", "shipped"]);
+    expect(reloaded.history[3].note).toBe("Replaced pads");
+    expect(reloaded.history.at(-1)).toMatchObject({ at: "2026-11-03T09:00:00.000Z", note: "Moved to Shipped — QA signed off" });
   });
 
   it("save/clear swallow storage errors and accept null", () => {
