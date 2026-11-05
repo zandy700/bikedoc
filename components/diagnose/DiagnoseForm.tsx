@@ -78,7 +78,10 @@ export function DiagnoseForm() {
   function removeImage() {
     setImage(null);
     setImageName("");
-    if (fileRef.current) fileRef.current.value = "";
+    if (fileRef.current) {
+      fileRef.current.value = "";
+      fileRef.current.focus();
+    }
   }
 
   function addExample(text: string) {
@@ -130,7 +133,7 @@ export function DiagnoseForm() {
         ) : null}
 
         <form onSubmit={onSubmit} noValidate className="panel flex flex-col gap-5 p-4 sm:p-5" aria-busy={loading}>
-          <div>
+          <div className="photo-upload">
             <span className="label" id={`${ids}-photo`}>
               Photo of the problem <span className="font-normal text-ink-2">(optional)</span>
             </span>
@@ -140,9 +143,9 @@ export function DiagnoseForm() {
                 <img
                   src={image}
                   alt={`Preview of ${imageName || "your photo"}`}
-                  className="max-h-56 w-auto rounded-lg border border-line object-contain"
+                  className="max-h-56 w-auto max-w-full rounded-lg border border-line object-contain sm:max-w-[60%]"
                 />
-                <div className="flex flex-col gap-2">
+                <div className="flex min-w-0 flex-col gap-2">
                   <p className="text-sm text-ink-2 [overflow-wrap:anywhere]">{imageName}</p>
                   <button type="button" className="btn btn-sm" onClick={removeImage}>
                     Remove photo
@@ -152,7 +155,7 @@ export function DiagnoseForm() {
             ) : (
               <label
                 htmlFor={`${ids}-file`}
-                className="flex min-h-28 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-line-strong bg-bg-2 p-4 text-center hover:border-accent has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-[var(--focus)]"
+                className="photo-upload-target flex min-h-28 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-line-strong bg-bg-2 p-4 text-center hover:border-accent"
               >
                 <Icon name="camera" width={28} height={28} />
                 <span className="font-semibold">{imageBusy ? "Preparing photo…" : "Take or choose a photo"}</span>
@@ -164,7 +167,6 @@ export function DiagnoseForm() {
               id={`${ids}-file`}
               type="file"
               accept="image/jpeg,image/png,image/webp"
-              capture="environment"
               aria-labelledby={`${ids}-photo`}
               onChange={onFile}
               className="sr-only"
@@ -231,7 +233,7 @@ export function DiagnoseForm() {
               ? `Diagnosis ready: ${result.diagnosis.issues.length} likely ${result.diagnosis.issues.length === 1 ? "issue" : "issues"}.`
               : ""}
         </p>
-        <h2 id={`${ids}-res`} ref={resultsRef} tabIndex={-1} className="font-display text-3xl font-bold focus:outline-none">
+        <h2 id={`${ids}-res`} ref={resultsRef} tabIndex={-1} className="font-display text-3xl font-bold">
           Likely issues
         </h2>
         {loading ? <ResultsSkeleton /> : null}

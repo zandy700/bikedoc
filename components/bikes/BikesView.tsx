@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useId, useMemo, useRef, useState } from "react";
 import { useStore } from "@/lib/store/StoreProvider";
-import { BIKE_TYPES, CATEGORY_LABELS, STAGES, STAGE_LABELS, type Bike, type BikeType } from "@/lib/types";
+import { BIKE_TYPES, CATEGORY_LABELS, STAGES, STAGE_LABELS, type Bike, type BikeType, type Stage } from "@/lib/types";
 import { StageBadge } from "@/components/ui/StageBadge";
 import { AddBikeForm } from "./AddBikeForm";
 import { AdvanceButton } from "./AdvanceButton";
@@ -155,38 +155,62 @@ export function BikesView() {
 function Board({ bikes, onAdvance }: { bikes: Bike[]; onAdvance: (id: string) => void }) {
   return (
     <div
-      className="-mx-4 mt-3 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 [scroll-snap-type:x_mandatory] lg:mx-0 lg:px-0"
+      className="relative -mx-4 mt-3 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 [scroll-snap-type:x_mandatory] lg:mx-0 lg:px-0"
       tabIndex={0}
       role="region"
       aria-label="Bike board, scroll sideways for more stages"
     >
       <ol className="grid auto-cols-[minmax(16rem,85vw)] grid-flow-col gap-3 sm:auto-cols-[minmax(13rem,1fr)]">
-        {STAGES.map((stage) => {
-          const inStage = bikes.filter((b) => b.stage === stage);
-          return (
-            <li key={stage} className="flex min-w-0 flex-col rounded-xl bg-bg-2 p-2 [scroll-snap-align:start]">
-              <h2 className="flex items-baseline justify-between px-2 py-1">
-                <span className="font-display text-2xl font-bold">{STAGE_LABELS[stage]}</span>
-                <span className="text-sm font-semibold text-ink-2">
-                  {inStage.length} <span className="sr-only">bikes</span>
-                </span>
-              </h2>
-              {inStage.length === 0 ? (
-                <p className="px-2 py-3 text-sm text-ink-2">No bikes at this stage.</p>
-              ) : (
-                <ul className="flex flex-col gap-2">
-                  {inStage.map((b) => (
-                    <li key={b.id}>
-                      <BikeCard bike={b} onAdvance={onAdvance} />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          );
-        })}
+        {STAGES.map((stage) => (
+          <StageColumn
+            key={stage}
+            stage={stage}
+            bikes={bikes.filter((b) => b.stage === stage)}
+            onAdvance={onAdvance}
+          />
+        ))}
       </ol>
     </div>
+  );
+}
+
+/** Shipped bikes pile up; show the most recent few unless expanded. */
+const SHIPPED_PREVIEW = 6;
+
+function StageColumn({ stage, bikes, onAdvance }: { stage: Stage; bikes: Bike[]; onAdvance: (id: string) => void }) {
+  const [expanded, setExpanded] = useState(false);
+  const collapsible = stage === "shipped" && bikes.length > SHIPPED_PREVIEW;
+  const visible = collapsible && !expanded ? bikes.slice(-SHIPPED_PREVIEW).reverse() : bikes;
+  return (
+    <li className="flex min-w-0 flex-col rounded-xl bg-bg-2 p-2 [scroll-snap-align:start]">
+      <h2 className="flex items-baseline justify-between px-2 py-1">
+        <span className="font-display text-2xl font-bold">{STAGE_LABELS[stage]}</span>
+        <span className="text-sm font-semibold text-ink-2">
+          {bikes.length} <span className="sr-only">bikes</span>
+        </span>
+      </h2>
+      {bikes.length === 0 ? (
+        <p className="px-2 py-3 text-sm text-ink-2">No bikes at this stage.</p>
+      ) : (
+        <ul className="flex flex-col gap-2">
+          {visible.map((b) => (
+            <li key={b.id}>
+              <BikeCard bike={b} onAdvance={onAdvance} />
+            </li>
+          ))}
+        </ul>
+      )}
+      {collapsible && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          className="mt-2 min-h-11 rounded-lg border border-line-strong bg-panel px-3 text-sm font-semibold hover:bg-bg focus-visible:outline-2 focus-visible:outline-offset-2"
+        >
+          {expanded ? "Show fewer" : `Show all ${bikes.length} shipped`}
+        </button>
+      )}
+    </li>
   );
 }
 

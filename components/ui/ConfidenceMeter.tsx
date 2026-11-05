@@ -11,7 +11,7 @@ export function confidenceWord(pct: number): string {
 export function ConfidenceMeter({ value, id }: { value: number; id?: string }) {
   const pct = confidencePercent(value);
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
       <span className="text-sm text-ink-2" id={id ? `${id}-label` : undefined}>
         Confidence
       </span>
@@ -23,6 +23,7 @@ export function ConfidenceMeter({ value, id }: { value: number; id?: string }) {
         optimum={100}
         value={pct}
         aria-labelledby={id ? `${id}-label` : undefined}
+        aria-label={id ? undefined : "Confidence"}
         className="sr-only"
       >
         {pct}%

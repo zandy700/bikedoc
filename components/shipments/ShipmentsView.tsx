@@ -78,8 +78,11 @@ export function ShipmentsView() {
                 </ul>
               </div>
 
-              <details className="mt-4" open={assigned > 0 && assigned <= 12}>
-                <summary className="inline-flex min-h-11 cursor-pointer items-center font-semibold">
+              <details className="group mt-4" open={assigned > 0 && assigned <= 12}>
+                <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 font-semibold [&::-webkit-details-marker]:hidden">
+                  <span aria-hidden="true" className="inline-block transition-transform group-open:rotate-90">
+                    ▸
+                  </span>
                   {assigned} assigned {assigned === 1 ? "bike" : "bikes"}
                 </summary>
                 {assigned === 0 ? (
