@@ -51,7 +51,7 @@ flowchart LR
     API["POST /api/diagnose"]
     Run["runDiagnosis"]
     Zod["zod validation"]
-    AI["AI SDK generateText<br/>+ Output.object<br/>(OpenAI or Anthropic)"]
+    AI["AI SDK generateObject<br/>+ zod schema<br/>(OpenAI or Anthropic)"]
     Rules["Rules engine<br/>(demo mode / fallback)"]
   end
 
@@ -97,7 +97,9 @@ Copy `.env.example` to `.env.local` and set one key:
 | `ANTHROPIC_API_KEY` | Use Anthropic (default model `claude-sonnet-5-5`). |
 | `BIKEDOC_MODEL` | Optional model id override for the active provider. |
 
-With no key configured, `/diagnose` shows the banner **"Demo mode — sample rule-based diagnosis, no AI key configured"** and uses the rule-based engine. If an AI call fails, the server falls back to the rules engine and returns a notice instead of an error. Photos are resized client-side to at most 1024px before upload.
+With no key configured, `/diagnose` shows the banner **"Demo mode — sample rule-based diagnosis, no AI key configured"** and uses the rule-based engine. Demo mode matches the symptoms you describe; it cannot analyze photos. If an AI call fails, the server falls back to the rules engine and returns a notice instead of an error. Photos are resized client-side to at most 1024px before upload.
+
+API keys stay on the server. With an AI key configured, the submitted description and resized photo are sent to the selected provider. Bike records stay in this browser's `localStorage`; there is no login or shared database. Use **Reset sample data** to discard local changes and restore the 60 sample bikes and 3 sample shipments.
 
 ## Project structure
 

@@ -51,16 +51,16 @@ async function open(page, route) {
   await sleep(CHART_SETTLE_MS);
 }
 
-async function shoot(page, name) {
+async function shoot(page, name, fullPage = true) {
   const file = path.join(OUT_DIR, name);
-  await page.screenshot({ path: file, fullPage: true });
+  await page.screenshot({ path: file, fullPage });
   console.log(`  saved ${path.relative(ROOT, file)}`);
 }
 
-async function capture(page, route, name) {
+async function capture(page, route, name, fullPage = true) {
   console.log(`- ${name} <- ${route}`);
   await open(page, route);
-  await shoot(page, name);
+  await shoot(page, name, fullPage);
 }
 
 async function captureDiagnose(page) {
@@ -68,8 +68,8 @@ async function captureDiagnose(page) {
   console.log(`- ${name} <- /diagnose`);
   await open(page, "/diagnose");
 
-  let input = page.getByLabel(/symptom/i).first();
-  if ((await input.count()) === 0) input = page.locator("textarea").first();
+  let input = page.locator("textarea").filter({ visible: true }).first();
+  if ((await input.count()) === 0) input = page.getByRole("textbox", { name: /symptom/i }).first();
   if ((await input.count()) === 0) {
     throw new Error("Could not find the symptom textarea on /diagnose (no label matching /symptom/i and no <textarea>).");
   }
@@ -125,7 +125,8 @@ async function main() {
 
     const mobile = await browser.newContext({ ...MOBILE, colorScheme: "light" });
     const mpage = await mobile.newPage();
-    await capture(mpage, "/", "mobile-dashboard.png");
+    // Viewport-only: a full-page capture would paint the fixed bottom tab bar mid-page.
+    await capture(mpage, "/", "mobile-dashboard.png", false);
     await mobile.close();
 
     console.log("Done.");
